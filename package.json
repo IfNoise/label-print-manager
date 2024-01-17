@@ -1,0 +1,34 @@
+{
+  "name": "label-print-manager",
+  "version": "1.0.0",
+  "description": "Mini restAPI Server for printing labels on Xprinter ",
+  "main": "app.js",
+  "scripts": {
+    "start": "cross-env NODE_ENV=production node app.js",
+    "server": "nodemon app.js",
+    "dev": "cross-env NODE_ENV=development npm run server"
+  },
+  "keywords": [
+    "node",
+    "express",
+    "cups"
+  ],
+  "author": "IfNoise",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "canvas": "^2.11.2",
+    "config": "^3.3.9",
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "mongodb": "^6.1.0",
+    "mongoose": "^7.6.0",
+    "node-cups": "^1.2.2",
+    "pdfkit": "^0.14.0",
+    "qrcode": "^1.5.3"
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.3",
+    "nodemon": "^3.0.1"
+  }
+}
