@@ -64,10 +64,10 @@ router.post("/", async (req, res) => {
       
         console.log('created label.pdf')
       })
-    const printerNames = await cups.getPrinterNames();
-    console.log(printerNames);
+    const printerName = 'Xprinter_XP-350B'
+    
     const options = {
-      destination: printerNames[0],
+      destination: printerName,
       jobTitle: "Label Printing",
       copies: 1,
     };
