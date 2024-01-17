@@ -67,7 +67,7 @@ router.post("/", async (req, res) => {
     const printerNames = await cups.getPrinterNames();
     console.log(printerNames);
     const options = {
-      destination: printerNames[2],
+      destination: printerNames[0],
       jobTitle: "Label Printing",
       copies: 1,
     };

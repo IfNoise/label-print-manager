@@ -24,7 +24,6 @@
     "mongodb": "^6.1.0",
     "mongoose": "^7.6.0",
     "node-cups": "^1.2.2",
-    "pdfkit": "^0.14.0",
     "qrcode": "^1.5.3"
   },
   "devDependencies": {
