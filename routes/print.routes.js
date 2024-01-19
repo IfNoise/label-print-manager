@@ -7,14 +7,11 @@ const { Image,createCanvas } = require('canvas')
 const cups = require("node-cups");
 const QRCode = require("qrcode");
 
-
-router.post("/", async (req, res) => {
+const printPlants=async (plants)=>{
   try {
-    const data = await TrayItem.find({}, "plantId").exec();
-
     const tray = await Promise.all(
-      data.map(async (plant, id) => {
-        const inputPlant = await Plant.findById(plant.plantId);
+      plants.map(async (id) => {
+        const inputPlant = await Plant.findById(id);
         let start;
         if (inputPlant.actions.length > 0) {
           start = inputPlant.actions[0].date.toDateString();
@@ -34,7 +31,7 @@ router.post("/", async (req, res) => {
     await Promise.all(tray.map(async(plant)=>{
       const id=plant.id.toString()
       const qrCodeImagePath ="./qr/"+ id+".png";
-      await QRCode.toFile(qrCodeImagePath,id,{width:85,height:85,margin:2});
+      QRCode.toFile(qrCodeImagePath,id,{width:75,height:75,margin:2});
     }) )
     const myPDFcanvas = createCanvas(142, 85, 'pdf')
     const ctx = myPDFcanvas.getContext('2d')
@@ -43,15 +40,15 @@ router.post("/", async (req, res) => {
         const qrCodeImagePath = './qr/'+id+".png";
         const img = new Image()
         img.src = qrCodeImagePath
-        ctx.drawImage(img, 55,0,85,85)
-        ctx.font = 'bold 16px Arial '
-        ctx.fillText(plant.pheno, 3, 17,54)
-        ctx.font = ' 10px Arial '
+        ctx.drawImage(img, 65,0,75,75)
+        ctx.font = 'bold 18px Arial '
+        ctx.fillText(plant.pheno, 3, 17,64)
+        ctx.font = ' 12px Arial '
         ctx.fillText(plant.strain, 3, 28,52)
-        ctx.font = '6px Arial '
-        ctx.fillText(plant.type, 3, 36,52)
         ctx.font = '8px Arial '
-        ctx.fillText('start:'+plant.start, 3, 49,52)
+        ctx.fillText(plant.type, 3, 36,52)
+        ctx.font = '10px Arial '
+        ctx.fillText('start:'+plant.start, 3, 49,62)
         ctx.addPage(142,85)
         fs.rm(qrCodeImagePath,(err)=>{
           console.log(err)
@@ -81,10 +78,39 @@ router.post("/", async (req, res) => {
         
       }
     });
-    res.json({ tray });
+    return  tray 
+  } catch (error) {
+    return error
+  }
+}
+
+
+router.post("/print_tray", async (req, res) => {
+  try {
+    const data = await TrayItem.find({}, "plantId").exec();
+    const plants=data.map((plant)=>(plant.plantId))
+    const result= await printPlants(plants)
+    
+    res.json({ result });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
 });
+router.post("/print_plants", async (req, res) => {
+  const plants=req.body.plants
+  if(!plants){
+    return res.status(500).json({ message: "Nothing for printing" });
+  }
+  try {
+    
+    const result= await printPlants(plants)
+    
+    res.json({ result });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+});
+
+
 
 module.exports = router;
