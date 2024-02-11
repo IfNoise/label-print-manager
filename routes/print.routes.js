@@ -102,7 +102,7 @@ router.post("/print_tray", async (req, res) => {
   }
 });
 router.post("/print_plants", async (req, res) => {
-  const { plants } = req.body;
+  const  plants  = req.body;
   if (plants?.length < 1) {
     return res.status(500).json({ message: "Nothing for printing" });
   }
