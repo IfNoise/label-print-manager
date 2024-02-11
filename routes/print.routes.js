@@ -8,6 +8,8 @@ const cups = require("node-cups");
 const QRCode = require("qrcode");
 
 const printPlants = async (plants) => {
+  console.log('printPlants: plants', plants)
+  
   try {
     const tray = await Promise.all(
       plants.map(
