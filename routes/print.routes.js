@@ -10,23 +10,25 @@ const QRCode = require("qrcode");
 const printPlants = async (plants) => {
   try {
     const tray = await Promise.all(
-      plants.map(async (id) => {
-        const inputPlant = await Plant.findById(id);
-        let start;
-        if (inputPlant.actions.length > 0) {
-          start = inputPlant.actions[0].date.toDateString();
-        } else {
-          start = "none";
-        }
-        const result = {
-          id: inputPlant._id,
-          strain: inputPlant.strain,
-          pheno: inputPlant.pheno,
-          type: inputPlant.type,
-          start,
-        };
-        return result;
-      })
+      plants.map(
+        async (id) =>
+          await Plant.findById(id)
+            .then((plant) => {
+              return {
+                id: plant._id,
+                strain: plant.strain,
+                pheno: plant.pheno,
+                type: plant.type,
+                start:
+                  plant.actions.length > 0
+                    ? plant.actions[0].date.toDateString()
+                    : "none",
+              };
+            })
+            .catch((err) => {
+              return { error: err.message };
+            })
+      )
     );
     await Promise.all(
       tray.map(async (plant) => {
@@ -50,7 +52,7 @@ const printPlants = async (plants) => {
       ctx.font = "bold 22px Arial ";
       ctx.fillText(plant.pheno, 3, 20, 64);
       ctx.font = " 12px Arial ";
-      ctx.fillText(plant.strain, 3, 30 ,52);
+      ctx.fillText(plant.strain, 3, 30, 52);
       ctx.font = "8px Arial ";
       ctx.fillText(plant.type, 3, 40, 52);
       ctx.font = "10px Arial ";
@@ -100,8 +102,8 @@ router.post("/print_tray", async (req, res) => {
   }
 });
 router.post("/print_plants", async (req, res) => {
-  const {plants} = req.body;
-  if (plants?.length <1) {
+  const { plants } = req.body;
+  if (plants?.length < 1) {
     return res.status(500).json({ message: "Nothing for printing" });
   }
   try {
