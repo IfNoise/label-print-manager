@@ -49,20 +49,26 @@ const printPlants = async (plants) => {
       const id = plant.id.toString();
       const qrCodeImagePath = "./qr/" + id + ".png";
       const img = new Image();
+      img.onload = () => {
+        ctx.drawImage(img, 66, 5, 75, 75);
+        ctx.font = "bold 22px Arial ";
+        ctx.fillText(plant.pheno, 3, 20, 64);
+        ctx.font = " 12px Arial ";
+        ctx.fillText(plant.strain, 3, 30, 52);
+        ctx.font = "8px Arial ";
+        ctx.fillText(plant.type, 3, 40, 52);
+        ctx.font = "10px Arial ";
+        ctx.fillText("start:" + plant.start, 3, 55, 62);
+        ctx.addPage(142, 85);
+        fs.rm(qrCodeImagePath, (err) => {
+          console.log(err);
+        });
+      };
+      img.onerror = (error) => {
+        console.error("Error loading image:", error);
+      };
       img.src = qrCodeImagePath;
-      ctx.drawImage(img, 66, 5, 75, 75);
-      ctx.font = "bold 22px Arial ";
-      ctx.fillText(plant.pheno, 3, 20, 64);
-      ctx.font = " 12px Arial ";
-      ctx.fillText(plant.strain, 3, 30, 52);
-      ctx.font = "8px Arial ";
-      ctx.fillText(plant.type, 3, 40, 52);
-      ctx.font = "10px Arial ";
-      ctx.fillText("start:" + plant.start, 3, 55, 62);
-      ctx.addPage(142, 85);
-      fs.rm(qrCodeImagePath, (err) => {
-        console.log(err);
-      });
+      
     });
     const buff = myPDFcanvas.toBuffer("application/pdf");
     fs.writeFile("label.pdf", buff, function (err) {
@@ -109,9 +115,9 @@ router.post("/print_plants", async (req, res) => {
     return res.status(500).json({ message: "Nothing for printing" });
   }
   try {
-    const result = await printPlants(plants);
+    const result = printPlants(plants);
 
-    res.json({ result });
+    res.json(result);
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
