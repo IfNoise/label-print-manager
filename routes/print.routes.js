@@ -32,8 +32,8 @@ const printPlants = async (plants) => {
             })
       )
     );
-    await Promise.all(
-      tray.map(async (plant) => {
+    
+      tray.map((plant) => {
         const id = plant.id.toString();
         const qrCodeImagePath = "./qr/" + id + ".png";
         QRCode.toFile(qrCodeImagePath, id, {
@@ -42,7 +42,7 @@ const printPlants = async (plants) => {
           margin: 2,
         });
       })
-    );
+    
     const myPDFcanvas = createCanvas(142, 85, "pdf");
     const ctx = myPDFcanvas.getContext("2d");
     tray.forEach((plant) => {
