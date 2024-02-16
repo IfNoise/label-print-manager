@@ -32,8 +32,8 @@ const printPlants = async (plants) => {
             })
       )
     );
-    
-      tray.map((plant) => {
+    await Promise.all(
+      tray.map(async (plant) => {
         const id = plant.id.toString();
         const qrCodeImagePath = "./qr/" + id + ".png";
         QRCode.toFile(qrCodeImagePath, id, {
@@ -42,7 +42,7 @@ const printPlants = async (plants) => {
           margin: 2,
         });
       })
-    
+    );
     const myPDFcanvas = createCanvas(142, 85, "pdf");
     const ctx = myPDFcanvas.getContext("2d");
     tray.forEach((plant) => {
@@ -115,7 +115,7 @@ router.post("/print_plants", async (req, res) => {
     return res.status(500).json({ message: "Nothing for printing" });
   }
   try {
-    const result = printPlants(plants);
+    const result = await printPlants(plants);
 
     res.json(result);
   } catch (error) {
