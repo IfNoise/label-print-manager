@@ -2,6 +2,7 @@ const { Router } = require("express");
 const TrayItem = require("../models/TrayItem");
 const Plant = require("../models/Plant");
 const router = Router();
+
 const fs = require("fs/promises");
 const { loadImage, createCanvas } = require("canvas");
 const cups = require("node-cups");
@@ -56,7 +57,7 @@ const printPlants = async (plants) => {
       }
 
       const id = plant.id.toString();
-      const qrCodeImagePath = "/qr/" + id + ".png";
+      const qrCodeImagePath = "./qr/" + id + ".png";
       generateQR(qrCodeImagePath,id);
       
 
