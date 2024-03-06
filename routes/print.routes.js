@@ -38,48 +38,46 @@ const printPlants = async (plants) => {
     );
     const myPDFcanvas = createCanvas(142, 85, "pdf");
     const ctx = myPDFcanvas.getContext("2d");
-    tray.forEach((plant, index) => {
+
+    async function drawPlant(plant, index) {
+      // Add a new page only if it's not the first plant
       if (index !== 0) {
         ctx.addPage(142, 85);
       }
+
       const id = plant.id.toString();
       const qrCodeImagePath = "./qr/" + id + ".png";
-      QRCode.toFile(qrCodeImagePath, id, {
+
+      await QRCode.toFile(qrCodeImagePath, id, {
         width: 75,
         height: 75,
         margin: 2,
-      })
-        .then(() => {
-          const image = loadImage(qrCodeImagePath);
-          image
-            .then((img) => {
-              ctx.drawImage(img, 66, 2, 75, 75);
-              ctx.font = "bold 22px Arial ";
-              ctx.fillText(plant.pheno, 3, 20, 64);
-              ctx.font = " 12px Arial ";
-              ctx.fillText(plant.strain, 3, 30, 52);
-              ctx.font = "8px Arial ";
-              ctx.fillText(plant.type, 3, 40, 52);
-              ctx.font = "10px Arial ";
-              ctx.fillText("start:" + plant.start, 3, 55, 62);
-              ctx.font = "bold 16px Arial";
-              ctx.fillText(plant.code, 13, 70, 62);
-              fs.rm(qrCodeImagePath)
-                .then(() => {
-                  console.log("QR code removed");
-                })
-                .catch((err) => {
-                  console.error(err);
-                });
-            })
-            .catch((err) => {
-              console.error(err);
-            });
-        })
-        .catch((err) => {
-          console.error(err);
-        });
-    });
+      });
+
+      const img = await loadImage(qrCodeImagePath);
+      ctx.drawImage(img, 66, 2, 75, 75);
+      ctx.font = "bold 22px Arial ";
+      ctx.fillText(plant.pheno, 3, 20, 64);
+      ctx.font = " 12px Arial ";
+      ctx.fillText(plant.strain, 3, 30, 52);
+      ctx.font = "8px Arial ";
+      ctx.fillText(plant.type, 3, 40, 52);
+      ctx.font = "10px Arial ";
+      ctx.fillText("start:" + plant.start, 3, 55, 62);
+      ctx.font = "bold 16px Arial";
+      ctx.fillText(plant.code, 13, 70, 62);
+
+      await fs.rm(qrCodeImagePath);
+      console.log("QR code removed");
+    }
+
+    async function drawPlants() {
+      for (let i = 0; i < tray.length; i++) {
+        await drawPlant(tray[i], i);
+      }
+    }
+
+    drawPlants().catch(console.error);
     const buff = myPDFcanvas.toBuffer("application/pdf");
     await fs.writeFile("label.pdf", buff);
     const printerNames = await cups.getPrinterNames();
