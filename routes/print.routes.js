@@ -7,6 +7,17 @@ const { loadImage, createCanvas } = require("canvas");
 const cups = require("node-cups");
 const QRCode = require("qrcode");
 
+      const generateQR = async (path,text) => {
+        try {
+          console.log( await QRCode.toFile(path,text, {
+            width: 75,
+            height: 75,
+            margin: 2,
+          }))
+        } catch (err) {
+          console.error(err)
+        }
+      }
 const printPlants = async (plants) => {
   console.log("printPlants: plants", plants);
 
@@ -47,12 +58,8 @@ const printPlants = async (plants) => {
 
       const id = plant.id.toString();
       const qrCodeImagePath = "./qr/" + id + ".png";
-
-      await QRCode.toFile(qrCodeImagePath, id, {
-        width: 75,
-        height: 75,
-        margin: 2,
-      });
+      generateQR(qrCodeImagePath,id);
+      
 
       const img = await loadImage(qrCodeImagePath);
       ctx.drawImage(img, 66, 2, 75, 75);
@@ -78,6 +85,7 @@ const printPlants = async (plants) => {
     }
 
     drawPlants().catch(console.error);
+
     const buff = myPDFcanvas.toBuffer("application/pdf");
     await fs.writeFile("label.pdf", buff);
     const printerNames = await cups.getPrinterNames();
