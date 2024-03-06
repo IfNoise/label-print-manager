@@ -3,7 +3,7 @@ const TrayItem = require("../models/TrayItem");
 const Plant = require("../models/Plant");
 const router = Router();
 const fs = require("fs/promises");
-const { Image, createCanvas } = require("canvas");
+const { loadImage, createCanvas } = require("canvas");
 const cups = require("node-cups");
 const QRCode = require("qrcode");
 
