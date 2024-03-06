@@ -8,8 +8,8 @@ const cups = require("node-cups");
 const QRCode = require("qrcode");
 
 const printPlants = async (plants) => {
-  console.log('printPlants: plants', plants)
-  
+  console.log("printPlants: plants", plants);
+
   try {
     const tray = await Promise.all(
       plants.map(
@@ -21,6 +21,10 @@ const printPlants = async (plants) => {
                 strain: plant.strain,
                 pheno: plant.pheno,
                 type: plant.type,
+                code: parseInt(
+                  plant._id.toString().slice(-4).toUpperCase(),
+                  16
+                ),
                 start:
                   plant.actions.length > 0
                     ? plant.actions[0].date.toDateString()
@@ -32,36 +36,48 @@ const printPlants = async (plants) => {
             })
       )
     );
-    await Promise.all(
-      tray.map(async (plant) => {
-        const id = plant.id.toString();
-        const qrCodeImagePath = "./qr/" + id + ".png";
-        QRCode.toFile(qrCodeImagePath, id, {
-          width: 75,
-          height: 75,
-          margin: 2,
-        });
-
-      })
-    );
     const myPDFcanvas = createCanvas(142, 85, "pdf");
     const ctx = myPDFcanvas.getContext("2d");
-    await Promise.all(tray.forEach(async(plant) => {
+    tray.forEach((plant) => {
       const id = plant.id.toString();
       const qrCodeImagePath = "./qr/" + id + ".png";
-      const img = await loadImage(qrCodeImagePath)
-        ctx.drawImage(img, 66, 5, 75, 75);
-        ctx.font = "bold 22px Arial ";
-        ctx.fillText(plant.pheno, 3, 20, 64);
-        ctx.font = " 12px Arial ";
-        ctx.fillText(plant.strain, 3, 30, 52);
-        ctx.font = "8px Arial ";
-        ctx.fillText(plant.type, 3, 40, 52);
-        ctx.font = "10px Arial ";
-        ctx.fillText("start:" + plant.start, 3, 55, 62);
-        ctx.addPage(142, 85);
-        await fs.rm(qrCodeImagePath);
-    }))
+      QRCode.toFile(qrCodeImagePath, id, {
+        width: 75,
+        height: 75,
+        margin: 2,
+      })
+        .then(() => {
+          const image = loadImage(qrCodeImagePath);
+          image
+            .then((img) => {
+              ctx.drawImage(img, 66, 2, 75, 75);
+              ctx.font = "bold 22px Arial ";
+              ctx.fillText(plant.pheno, 3, 20, 64);
+              ctx.font = " 12px Arial ";
+              ctx.fillText(plant.strain, 3, 30, 52);
+              ctx.font = "8px Arial ";
+              ctx.fillText(plant.type, 3, 40, 52);
+              ctx.font = "10px Arial ";
+              ctx.fillText("start:" + plant.start, 3, 55, 62);
+              ctx.font = "bold 16px Arial";
+              ctx.fillText(plant.code, 13, 70, 62);
+              ctx.addPage(142, 85);
+              fs.rm(qrCodeImagePath)
+                .then(() => {
+                  console.log("QR code removed");
+                })
+                .catch((err) => {
+                  console.error(err);
+                });
+            })
+            .catch((err) => {
+              console.error(err);
+            });
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    });
     const buff = myPDFcanvas.toBuffer("application/pdf");
     await fs.writeFile("label.pdf", buff);
     const printerNames = await cups.getPrinterNames();
@@ -98,7 +114,7 @@ router.post("/print_tray", async (req, res) => {
   }
 });
 router.post("/print_plants", async (req, res) => {
-  const  plants  = req.body;
+  const plants = req.body;
   if (plants?.length < 1) {
     return res.status(500).json({ message: "Nothing for printing" });
   }
