@@ -2,7 +2,7 @@ const { Router } = require("express");
 const TrayItem = require("../models/TrayItem");
 const Plant = require("../models/Plant");
 const router = Router();
-const fs = require("fs");
+const fs = require("fs/promises");
 const { Image, createCanvas } = require("canvas");
 const cups = require("node-cups");
 const QRCode = require("qrcode");
@@ -41,15 +41,15 @@ const printPlants = async (plants) => {
           height: 75,
           margin: 2,
         });
+
       })
     );
     const myPDFcanvas = createCanvas(142, 85, "pdf");
     const ctx = myPDFcanvas.getContext("2d");
-    tray.forEach((plant) => {
+    await Promise.all(tray.forEach(async(plant) => {
       const id = plant.id.toString();
       const qrCodeImagePath = "./qr/" + id + ".png";
-      const img = new Image();
-      img.onload = () => {
+      const img = await loadImage(qrCodeImagePath)
         ctx.drawImage(img, 66, 5, 75, 75);
         ctx.font = "bold 22px Arial ";
         ctx.fillText(plant.pheno, 3, 20, 64);
@@ -60,22 +60,10 @@ const printPlants = async (plants) => {
         ctx.font = "10px Arial ";
         ctx.fillText("start:" + plant.start, 3, 55, 62);
         ctx.addPage(142, 85);
-        fs.rm(qrCodeImagePath, (err) => {
-          console.log(err);
-        });
-      };
-      img.onerror = (error) => {
-        console.error("Error loading image:", error);
-      };
-      img.src = qrCodeImagePath;
-      
-    });
+        await fs.rm(qrCodeImagePath);
+    }))
     const buff = myPDFcanvas.toBuffer("application/pdf");
-    fs.writeFile("label.pdf", buff, function (err) {
-      if (err) throw err;
-
-      console.log("created label.pdf");
-    });
+    await fs.writeFile("label.pdf", buff);
     const printerNames = await cups.getPrinterNames();
     console.log(printerNames);
     const options = {
