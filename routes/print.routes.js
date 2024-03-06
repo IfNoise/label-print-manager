@@ -73,7 +73,6 @@ const printPlants = async (plants) => {
       }).catch(console.error);
       })
       
-      console.log("QR code removed");
     }
 
     async function drawPlants() {
