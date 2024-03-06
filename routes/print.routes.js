@@ -38,7 +38,10 @@ const printPlants = async (plants) => {
     );
     const myPDFcanvas = createCanvas(142, 85, "pdf");
     const ctx = myPDFcanvas.getContext("2d");
-    tray.forEach((plant) => {
+    tray.forEach((plant, index) => {
+      if (index !== 0) {
+        ctx.addPage(142, 85);
+      }
       const id = plant.id.toString();
       const qrCodeImagePath = "./qr/" + id + ".png";
       QRCode.toFile(qrCodeImagePath, id, {
@@ -61,7 +64,6 @@ const printPlants = async (plants) => {
               ctx.fillText("start:" + plant.start, 3, 55, 62);
               ctx.font = "bold 16px Arial";
               ctx.fillText(plant.code, 13, 70, 62);
-              ctx.addPage(142, 85);
               fs.rm(qrCodeImagePath)
                 .then(() => {
                   console.log("QR code removed");
