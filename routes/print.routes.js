@@ -56,7 +56,7 @@ const printPlants = async (plants) => {
       }
 
       const id = plant.id.toString();
-      const qrCodeImagePath = "./qr/" + id + ".png";
+      const qrCodeImagePath = "/qr/" + id + ".png";
       generateQR(qrCodeImagePath,id);
       
 
