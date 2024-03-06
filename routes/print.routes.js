@@ -48,7 +48,7 @@ const printPlants = async (plants) => {
       const id = plant.id.toString();
       const qrCodeImagePath = "./qr/" + id + ".png";
 
-      const generateQr=()=> Promise((resolve, reject) => {
+      const generateQr=()=> new Promise((resolve, reject) => {
         QRCode.toFile(qrCodeImagePath, id, {
           width: 75,
           height: 75,
