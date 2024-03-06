@@ -75,9 +75,9 @@ const printPlants = async (plants) => {
       .then(()=>{
       loadImage(qrCodeImagePath).then((img) => {
       ctx.drawImage(img, 66, 2, 75, 75)
-      
+      fs.rm(qrCodeImagePath);
       })})
-      await fs.rm(qrCodeImagePath);
+      
       console.log("QR code removed");
     }
 
