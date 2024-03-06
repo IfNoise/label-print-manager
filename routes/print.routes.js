@@ -55,7 +55,7 @@ const printPlants = async (plants) => {
       }
 
       const id = plant.id.toString();
-      const qrCodeImagePath = "./qr/" + id + ".png";
+      const qrCodeImagePath = "qr/" + id + ".png";
       ctx.font = "bold 22px Arial ";
       ctx.fillText(plant.pheno, 3, 20, 64);
       ctx.font = " 12px Arial ";
