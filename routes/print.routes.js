@@ -47,8 +47,8 @@ const printPlants = async (plants) => {
 
       const id = plant.id.toString();
       const qrCodeImagePath = "./qr/" + id + ".png";
-      
-      await new Promise((resolve, reject) => {
+
+      const generateQr=()=> Promise((resolve, reject) => {
         QRCode.toFile(qrCodeImagePath, id, {
           width: 75,
           height: 75,
@@ -71,8 +71,12 @@ const printPlants = async (plants) => {
       ctx.fillText("start:" + plant.start, 3, 55, 62);
       ctx.font = "bold 16px Arial";
       ctx.fillText(plant.code, 13, 70, 62);
-      const img = await loadImage(qrCodeImagePath);
-      ctx.drawImage(img, 66, 2, 75, 75);
+      generateQr()
+      .then(()=>{
+      loadImage(qrCodeImagePath).then((img) => {
+      ctx.drawImage(img, 66, 2, 75, 75)
+      
+      })})
       await fs.rm(qrCodeImagePath);
       console.log("QR code removed");
     }
