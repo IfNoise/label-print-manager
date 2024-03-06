@@ -55,13 +55,12 @@ const printPlants = async (plants) => {
       }
 
       const id = plant.id.toString();
-      const qrCodeImagePath = "qr/" + id + ".png";
-      generateQr(qrCodeImagePath, id)
-      .then(()=>{
-      loadImage(qrCodeImagePath).then((img) => {
-      ctx.drawImage(img, 66, 2, 75, 75)
-      }).catch(console.error);
-      })
+      const qrCodeImagePath = "./qr/" + id + ".png";
+
+
+      
+
+      
       ctx.font = "bold 22px Arial ";
       ctx.fillText(plant.pheno, 3, 20, 64);
       ctx.font = " 12px Arial ";
@@ -72,8 +71,14 @@ const printPlants = async (plants) => {
       ctx.fillText("start:" + plant.start, 3, 55, 62);
       ctx.font = "bold 16px Arial";
       ctx.fillText(plant.code, 13, 70, 62);
+      generateQr(qrCodeImagePath, id)
+      .then(()=>{
+      loadImage(qrCodeImagePath).then((img) => {
+      ctx.drawImage(img, 66, 2, 75, 75)
+      fs.rm(qrCodeImagePath).then(()=>{console.log("QR code removed")});
+      })})
       
-      
+      console.log("QR code removed");
     }
 
     async function drawPlants() {
