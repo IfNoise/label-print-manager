@@ -51,7 +51,6 @@ const printPlants = async (plants) => {
     const ctx = myPDFcanvas.getContext("2d");
 
     async function drawPlant(plant, index) {
-      // Add a new page only if it's not the first plant
       if (index !== 0) {
         ctx.addPage(142, 85);
       }
@@ -61,7 +60,12 @@ const printPlants = async (plants) => {
       generateQR(qrCodeImagePath,id);
       
 
-      const img = await loadImage(qrCodeImagePath);
+      const img = await loadImage(qrCodeImagePath,(err)=>{
+        if(err){
+          console.error(err);
+        }
+      
+      });
       ctx.drawImage(img, 66, 2, 75, 75);
       ctx.font = "bold 22px Arial ";
       ctx.fillText(plant.pheno, 3, 20, 64);
