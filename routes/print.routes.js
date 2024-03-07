@@ -7,6 +7,7 @@ const fs = require("fs/promises");
 const { loadImage, createCanvas } = require("canvas");
 const cups = require("node-cups");
 const QRCode = require("qrcode");
+const { log } = require("console");
 const printPlants = async (plants) => {
   console.log("printPlants: plants", plants);
 
@@ -44,17 +45,17 @@ const printPlants = async (plants) => {
         width: 75,
         height: 75,
         margin: 2,
-    })}));
+    })
+      console.log('QR code created')  
+  }));
 
     const myPDFcanvas = createCanvas(142, 85, "pdf");
     const ctx = myPDFcanvas.getContext("2d");
 
-    tray.forEach((plant, index) => {
+    tray.forEach( async (plant, index) => {
       if (index > 0) {
         ctx.addPage(142, 85);
       }
-
-
       ctx.font = "bold 22px Arial ";
       ctx.fillText(plant.pheno, 3, 20, 64);
       ctx.font = " 12px Arial ";
@@ -66,12 +67,14 @@ const printPlants = async (plants) => {
       ctx.font = "bold 16px Arial";
       ctx.fillText(plant.code, 13, 70, 62);
 
-        loadImage(plant.qr).then((img) => {
+        const img =await loadImage(plant.qr)
           ctx.drawImage(img, 66, 2, 75, 75);
           // fs.rm(qrCodeImagePath).then(() => {
           //   console.log("QR code removed");
           // });
-        });
+        
+        console.log('Page#', index, 'created')
+        
       });
     
 
