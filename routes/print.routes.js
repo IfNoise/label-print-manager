@@ -22,12 +22,10 @@ const printPlants = async (plants) => {
           await Plant.findById(id)
             .then((plant) => {
               return {
-                id: plant._id,
                 strain: plant.strain,
                 pheno: plant.pheno,
                 type: plant.type,
-                code: parseInt(
-                  plant._id.toString().slice(-4).toUpperCase(),
+                code: parseInt(plant.__vid.toString().slice(-4).toUpperCase(),
                   16
                 ),
                 start:
@@ -67,6 +65,8 @@ const printPlants = async (plants) => {
       if (index > 0) {
         ctx.addPage(142, 85);
       }
+      const img = await loadImage(plant.qr);
+      ctx.drawImage(img, 66, 2, 75, 75);
       ctx.font = "bold 22px Arial ";
       ctx.fillText(plant.pheno, 3, 20, 64);
       ctx.font = " 12px Arial ";
@@ -78,9 +78,7 @@ const printPlants = async (plants) => {
       ctx.font = "bold 16px Arial";
       ctx.fillText(plant.code, 13, 70, 62);
 
-      const img = await loadImage(plant.qr);
-      ctx.drawImage(img, 66, 2, 75, 75);
-
+      
       console.log("Page#", index, "created");
     });
     // fs.rm(qrCodeImagePath).then(() => {
