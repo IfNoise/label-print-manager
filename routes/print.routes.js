@@ -48,6 +48,7 @@ const printPlants = async (plants) => {
           margin: 2,
         });
         console.log("QR code created");
+        return
       })
     );
 
