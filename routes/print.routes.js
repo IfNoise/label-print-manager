@@ -85,16 +85,18 @@ const printPlants = async (plants) => {
     // fs.rm(qrCodeImagePath).then(() => {
     //   console.log("QR code removed");
     // });
-
-    const buff = myPDFcanvas.toBuffer("application/pdf");
-    await fs.writeFile("label.pdf", buff);
+    
     const printerNames = await cups.getPrinterNames();
     console.log(printerNames);
     const options = {
       destination: printerNames[0],
       jobTitle: "Label Printing",
       copies: 1,
-    };
+    }
+
+    myPDFcanvas.toBuffer("application/pdf").then((buff) => {
+    fs.writeFile("label.pdf", buff).then(() => {
+    
     cups.printFile("label.pdf", options, (err, jobID) => {
       if (err) {
         console.error(err);
@@ -103,7 +105,7 @@ const printPlants = async (plants) => {
         console.log(`Этикетка успешно отправлена на печать. Job ID: ${jobID}`);
         res.send("Этикетка успешно отправлена на печать.");
       }
-    });
+    })})})
 
     return tray;
   } catch (error) {
