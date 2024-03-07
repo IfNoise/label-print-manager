@@ -63,7 +63,7 @@ const printPlants = async (plants) => {
     const myPDFcanvas = createCanvas(142, 85, "pdf");
     const ctx = myPDFcanvas.getContext("2d");
 
-    async function drawPlant(plant, index) {
+    tray.forEach((plant, index) => {
       if (index !== 0) {
         ctx.addPage(142, 85);
       }
@@ -87,15 +87,7 @@ const printPlants = async (plants) => {
       //     });
       //   });
       // });
-    }
-
-    async function drawPlants() {
-      for (let i = 0; i < tray.length; i++) {
-        await drawPlant(tray[i], i);
-      }
-    }
-
-    drawPlants().catch(console.error);
+    })
 
     const buff = myPDFcanvas.toBuffer("application/pdf");
     await fs.writeFile("label.pdf", buff);
