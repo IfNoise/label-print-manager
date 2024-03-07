@@ -40,7 +40,7 @@ const printPlants = async (plants) => {
     );
     console.log("tray: ", tray);
 
-    await Promise.all(
+    
       tray.forEach(async (plant) => {
         await QRCode.toFile(plant.qr, plant.id.toString(), {
           width: 75,
@@ -50,7 +50,7 @@ const printPlants = async (plants) => {
         console.log("QR code created");
         return
       })
-    );
+  
       console.log('QR codes created')
       
     const myPDFcanvas = createCanvas(142, 85, "pdf");
