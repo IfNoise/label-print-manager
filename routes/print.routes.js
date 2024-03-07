@@ -22,6 +22,7 @@ const printPlants = async (plants) => {
           await Plant.findById(id)
             .then((plant) => {
               return {
+                id: plant._id,
                 strain: plant.strain,
                 pheno: plant.pheno,
                 type: plant.type,
