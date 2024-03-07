@@ -37,6 +37,8 @@ const printPlants = async (plants) => {
             })
       )
     );
+    console.log('tray: ', tray)
+    
     await Promise.all(tray.forEach(async(plant) => {
       await QRCode.toFile(plant.qr, plant.id.toString(), {
         width: 75,
@@ -91,6 +93,7 @@ const printPlants = async (plants) => {
         res.send("Этикетка успешно отправлена на печать.");
       }
     });
+
     return tray;
   } catch (error) {
     return error;
