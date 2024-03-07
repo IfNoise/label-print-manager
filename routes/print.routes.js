@@ -51,7 +51,8 @@ const printPlants = async (plants) => {
         return
       })
     );
-
+      console.log('QR codes created')
+      
     const myPDFcanvas = createCanvas(142, 85, "pdf");
     console.log("Canvas created");
 
