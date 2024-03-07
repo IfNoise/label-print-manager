@@ -45,6 +45,7 @@ const printPlants = async (plants) => {
                   plant.actions.length > 0
                     ? plant.actions[0].date.toDateString()
                     : "none",
+                qr: "qr/" + plant._id + ".png",
               };
             })
             .catch((err) => {
@@ -52,6 +53,13 @@ const printPlants = async (plants) => {
             })
       )
     );
+    await Promise.all(tray.forEach(async(plant) => {
+      await QRCode.toFile(plant.qr, plant.id.toString(), {
+        width: 75,
+        height: 75,
+        margin: 2,
+    })}));
+
     const myPDFcanvas = createCanvas(142, 85, "pdf");
     const ctx = myPDFcanvas.getContext("2d");
 
@@ -60,8 +68,6 @@ const printPlants = async (plants) => {
         ctx.addPage(142, 85);
       }
 
-      const id = plant.id.toString();
-      const qrCodeImagePath = "qr/" + id + ".png";
 
       ctx.font = "bold 22px Arial ";
       ctx.fillText(plant.pheno, 3, 20, 64);
