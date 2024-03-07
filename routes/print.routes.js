@@ -26,7 +26,7 @@ const printPlants = async (plants) => {
                 strain: plant.strain,
                 pheno: plant.pheno,
                 type: plant.type,
-                code: parseInt(plant.__vid.toString().slice(-4).toUpperCase(),
+                code: parseInt(plant._id.toString().slice(-4).toUpperCase(),
                   16
                 ),
                 start:
