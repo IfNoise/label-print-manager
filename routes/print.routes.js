@@ -38,21 +38,25 @@ const printPlants = async (plants) => {
             })
       )
     );
-    console.log('tray: ', tray)
-    
-    await Promise.all(tray.forEach(async(plant) => {
-      await QRCode.toFile(plant.qr, plant.id.toString(), {
-        width: 75,
-        height: 75,
-        margin: 2,
-    })
-      console.log('QR code created')  
-  }));
+    console.log("tray: ", tray);
+
+    await Promise.all(
+      tray.forEach(async (plant) => {
+        await QRCode.toFile(plant.qr, plant.id.toString(), {
+          width: 75,
+          height: 75,
+          margin: 2,
+        });
+        console.log("QR code created");
+      })
+    );
 
     const myPDFcanvas = createCanvas(142, 85, "pdf");
+    console.log("Canvas created");
+
     const ctx = myPDFcanvas.getContext("2d");
 
-    tray.forEach( async (plant, index) => {
+    tray.forEach(async (plant, index) => {
       if (index > 0) {
         ctx.addPage(142, 85);
       }
@@ -67,16 +71,14 @@ const printPlants = async (plants) => {
       ctx.font = "bold 16px Arial";
       ctx.fillText(plant.code, 13, 70, 62);
 
-        const img =await loadImage(plant.qr)
-          ctx.drawImage(img, 66, 2, 75, 75);
-          // fs.rm(qrCodeImagePath).then(() => {
-          //   console.log("QR code removed");
-          // });
-        
-        console.log('Page#', index, 'created')
-        
-      });
-    
+      const img = await loadImage(plant.qr);
+      ctx.drawImage(img, 66, 2, 75, 75);
+
+      console.log("Page#", index, "created");
+    });
+    // fs.rm(qrCodeImagePath).then(() => {
+    //   console.log("QR code removed");
+    // });
 
     const buff = myPDFcanvas.toBuffer("application/pdf");
     await fs.writeFile("label.pdf", buff);
