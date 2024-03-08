@@ -97,28 +97,11 @@ const printPlants = async (plants) => {
 
     const ctx = myPDFcanvas.getContext("2d");
 
-    // data.forEach((plant, index) => 
-    //   {if (index !==0) {
-    //     ctx.addPage(142, 85);
-    //   }
-    //   ctx.drawImage(img, 66, 2, 75, 75);
-    //   ctx.font = "bold 22px Arial ";
-    //   ctx.fillText(plant.pheno, 3, 20, 64);
-    //   ctx.font = " 12px Arial ";
-    //   ctx.fillText(plant.strain, 3, 30, 52);
-    //   ctx.font = "8px Arial ";
-    //   ctx.fillText(plant.type, 3, 40, 52);
-    //   ctx.font = "10px Arial ";
-    //   ctx.fillText("start:" + plant.start, 3, 55, 62);
-    //   ctx.font = "bold 16px Arial";
-    //   ctx.fillText(plant.code, 13, 70, 62);
-
-    //   console.log("Page#", index, "created");
-    // })
     // fs.rm(qrCodeImagePath).then(() => {
     //   console.log("QR code removed");
     // });
-    await Promise.all(drawPlantLabels(tray, ctx));
+    drawPlantLabels(tray, ctx);
+
     const printerNames = await cups.getPrinterNames();
     console.log(printerNames);
     const options = {
