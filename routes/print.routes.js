@@ -76,7 +76,7 @@ const printPlants = async (plants) => {
 
     const ctx = myPDFcanvas.getContext("2d");
 
-    tray.forEach(async (plant, index) => {
+    await Promise.all(tray.forEach(async (plant, index) => {
       if (index > 0) {
         ctx.addPage(142, 85);
       }
@@ -94,7 +94,7 @@ const printPlants = async (plants) => {
       ctx.fillText(plant.code, 13, 70, 62);
 
       console.log("Page#", index, "created");
-    });
+    }));
     // fs.rm(qrCodeImagePath).then(() => {
     //   console.log("QR code removed");
     // });
