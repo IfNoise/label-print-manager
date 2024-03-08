@@ -76,10 +76,10 @@ const printPlants = async (plants) => {
 
     const ctx = myPDFcanvas.getContext("2d");
 
-    const data =await Promise.all(tray.map(async (plant, index) => {
+    const data =tray.map(async (plant) => {
         const img=await loadImage(plant.qr);
         return {...plant, img};
-    }))
+    })
     data.forEach((plant, index) => 
       {if (index !==0) {
         ctx.addPage(142, 85);
