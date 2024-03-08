@@ -20,7 +20,7 @@ const createQr = (path, id) => {
       },
       (err) => {
         if (err) {
-          console.log('Error creating QR code: ', err);
+          console.log("Error creating QR code: ", err);
           reject(err);
         } else {
           resolve("ok");
@@ -31,11 +31,11 @@ const createQr = (path, id) => {
 };
 
 const drawPlantLabels = (plants, ctx) => {
-plants.forEach(async(plant, index) => 
-      {if (index !==0) {
+  plants.forEach((plant, index) => {
+    loadImage(plant.qr).then((img) => {
+      if (index !== 0) {
         ctx.addPage(142, 85);
       }
-      const img= await loadImage(plant.qr);
       ctx.drawImage(img, 66, 2, 75, 75);
       ctx.font = "bold 22px Arial ";
       ctx.fillText(plant.pheno, 3, 20, 64);
@@ -49,7 +49,9 @@ plants.forEach(async(plant, index) =>
       ctx.fillText(plant.code, 13, 70, 62);
 
       console.log("Page#", index, "created");
-    })}
+    });
+  });
+};
 
 const printPlants = async (plants) => {
   console.log("printPlants: plants", plants);
@@ -84,7 +86,7 @@ const printPlants = async (plants) => {
     console.log("tray: ", tray);
 
     const qrs = await Promise.all(
-      tray.map(async(plant) => {
+      tray.map(async (plant) => {
         return await createQr(plant.qr, plant.id);
       })
     );
