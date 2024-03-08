@@ -8,8 +8,18 @@ const { loadImage, createCanvas } = require("canvas");
 const cups = require("node-cups");
 const QRCode = require("qrcode");
 
-const createQr=()=>{
-}
+const createQr=(path,id)=>{
+return new Promise((resolve,reject)=>{
+  QRCode.toFile(path, id, {
+    width: 75,
+    height: 75,
+    margin: 2,
+  },(err)=>{
+    if(err)reject(err)
+    resolve('QR code created')
+  });
+
+})}
 
 
 const printPlants = async (plants) => {
@@ -45,14 +55,9 @@ const printPlants = async (plants) => {
 
     
      const qrs= Promise.all(tray.map(async (plant) => {
-        await QRCode.toFile(plant.qr, plant.id.toString(), {
-          width: 75,
-          height: 75,
-          margin: 2,
-        });
-
-        console.log("QR code created");
-        return plant.code
+        
+      
+        return await createQr(plant.qr,plant.id)
       }))
   
       if(qrs.length===tray.length)console.log('QR codes created')
