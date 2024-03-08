@@ -8,19 +8,23 @@ const { loadImage, createCanvas } = require("canvas");
 const cups = require("node-cups");
 const QRCode = require("qrcode");
 
-const createQr=(path,id)=>{
-return new Promise((resolve,reject)=>{
-  QRCode.toFile(path, id, {
-    width: 75,
-    height: 75,
-    margin: 2,
-  },(err)=>{
-    if(err)reject(err)
-    resolve('QR code created')
+const createQr = (path, id) => {
+  return new Promise((resolve, reject) => {
+    QRCode.toFile(
+      path,
+      id,
+      {
+        width: 75,
+        height: 75,
+        margin: 2,
+      },
+      (err) => {
+        if (err) reject(err);
+        resolve("QR code created");
+      }
+    );
   });
-
-})}
-
+};
 
 const printPlants = async (plants) => {
   console.log("printPlants: plants", plants);
@@ -36,7 +40,8 @@ const printPlants = async (plants) => {
                 strain: plant.strain,
                 pheno: plant.pheno,
                 type: plant.type,
-                code: parseInt(plant._id.toString().slice(-4).toUpperCase(),
+                code: parseInt(
+                  plant._id.toString().slice(-4).toUpperCase(),
                   16
                 ),
                 start:
@@ -53,15 +58,15 @@ const printPlants = async (plants) => {
     );
     console.log("tray: ", tray);
 
-    
-     const qrs= Promise.all(tray.map(async (plant) => {
-        
-      
-        return await createQr(plant.qr,plant.id)
-      }))
-  
-      if(qrs.length===tray.length)console.log('QR codes created')
-      
+    const qrs = await Promise.all(
+      tray.map(async (plant) => {
+        return await createQr(plant.qr, plant.id);
+      })
+    );
+    console.log("Qrs", qrs);
+
+    if (qrs.length === tray.length) console.log("QR codes created");
+
     const myPDFcanvas = createCanvas(142, 85, "pdf");
     console.log("Canvas created");
 
@@ -84,33 +89,35 @@ const printPlants = async (plants) => {
       ctx.font = "bold 16px Arial";
       ctx.fillText(plant.code, 13, 70, 62);
 
-      
       console.log("Page#", index, "created");
     });
     // fs.rm(qrCodeImagePath).then(() => {
     //   console.log("QR code removed");
     // });
-    
+
     const printerNames = await cups.getPrinterNames();
     console.log(printerNames);
     const options = {
       destination: printerNames[0],
       jobTitle: "Label Printing",
       copies: 1,
-    }
+    };
 
     myPDFcanvas.toBuffer("application/pdf").then((buff) => {
-    fs.writeFile("label.pdf", buff).then(() => {
-    
-    cups.printFile("label.pdf", options, (err, jobID) => {
-      if (err) {
-        console.error(err);
-        res.status(500).send("Ошибка при печати этикетки");
-      } else {
-        console.log(`Этикетка успешно отправлена на печать. Job ID: ${jobID}`);
-        res.send("Этикетка успешно отправлена на печать.");
-      }
-    })})})
+      fs.writeFile("label.pdf", buff).then(() => {
+        cups.printFile("label.pdf", options, (err, jobID) => {
+          if (err) {
+            console.error(err);
+            res.status(500).send("Ошибка при печати этикетки");
+          } else {
+            console.log(
+              `Этикетка успешно отправлена на печать. Job ID: ${jobID}`
+            );
+            res.send("Этикетка успешно отправлена на печать.");
+          }
+        });
+      });
+    });
 
     return tray;
   } catch (error) {
