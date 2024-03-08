@@ -9,7 +9,8 @@ const cups = require("node-cups");
 const QRCode = require("qrcode");
 
 const createQr = (path, id) => {
-  return QRCode.toFile(
+  return new Promise((resolve, reject) => {
+    QRCode.toFile(
       path,
       id,
       {
@@ -18,12 +19,15 @@ const createQr = (path, id) => {
         margin: 2,
       },
       (err) => {
-        if (err) console.log('Error creating QR code: ', err);
-        
-        return "ok";
+        if (err) {
+          console.log('Error creating QR code: ', err);
+          reject(err);
+        } else {
+          resolve("ok");
+        }
       }
     );
-  
+  });
 };
 
 const printPlants = async (plants) => {
@@ -58,9 +62,9 @@ const printPlants = async (plants) => {
     );
     console.log("tray: ", tray);
 
-    const qrs = await Promise.all(
-      tray.map((plant) => {
-        return createQr(plant.qr, plant.id);
+    const qrs = Promise.all(
+      tray.map(async(plant) => {
+        return await createQr(plant.qr, plant.id);
       })
     );
     console.log("Qrs", qrs);
