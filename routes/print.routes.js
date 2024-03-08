@@ -107,20 +107,20 @@ const printPlants = async (plants) => {
       copies: 1,
     };
 
-    myPDFcanvas.toBuffer("application/pdf").then((buff) => {
-      fs.writeFile("label.pdf", buff).then(() => {
-        cups.printFile("label.pdf", options, (err, jobID) => {
-          if (err) {
-            console.error(err);
-            res.status(500).send("Ошибка при печати этикетки");
-          } else {
-            console.log(
-              `Этикетка успешно отправлена на печать. Job ID: ${jobID}`
-            );
-            res.send("Этикетка успешно отправлена на печать.");
-          }
-        });
-      });
+    const buff = myPDFcanvas.toBuffer("application/pdf");
+    fs.writeFile("label.pdf", buff, function (err) {
+      if (err) throw err;
+
+      console.log("created label.pdf");
+    });
+    cups.printFile("label.pdf", options, (err, jobID) => {
+      if (err) {
+        console.error(err);
+        res.status(500).send("Ошибка при печати этикетки");
+      } else {
+        console.log(`Этикетка успешно отправлена на печать. Job ID: ${jobID}`);
+        res.send("Этикетка успешно отправлена на печать.");
+      }
     });
 
     return tray;
