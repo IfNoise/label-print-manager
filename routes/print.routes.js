@@ -48,7 +48,7 @@ const printPlants = async (plants) => {
                   plant.actions.length > 0
                     ? plant.actions[0].date.toDateString()
                     : "none",
-                qr: "qr/" + plant._id + ".png",
+                qr: "./qr/" + plant._id + ".png",
               };
             })
             .catch((err) => {
@@ -59,8 +59,8 @@ const printPlants = async (plants) => {
     console.log("tray: ", tray);
 
     const qrs = await Promise.all(
-      tray.map(async (plant) => {
-        return await createQr(plant.qr, plant.id);
+      tray.map((plant) => {
+        return createQr(plant.qr, plant.id);
       })
     );
     console.log("Qrs", qrs);
