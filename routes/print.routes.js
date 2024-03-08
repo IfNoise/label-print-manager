@@ -76,11 +76,14 @@ const printPlants = async (plants) => {
 
     const ctx = myPDFcanvas.getContext("2d");
 
-    await Promise.all(tray.forEach(async (plant, index) => {
-      if (index > 0) {
+    const data =await Promise.all(tray.map(async (plant, index) => {
+        const img=await loadImage(plant.qr);
+        return {...plant, img};
+    }))
+    data.forEach((plant, index) => 
+      {if (index !==0) {
         ctx.addPage(142, 85);
       }
-      const img = await loadImage(plant.qr);
       ctx.drawImage(img, 66, 2, 75, 75);
       ctx.font = "bold 22px Arial ";
       ctx.fillText(plant.pheno, 3, 20, 64);
@@ -94,7 +97,7 @@ const printPlants = async (plants) => {
       ctx.fillText(plant.code, 13, 70, 62);
 
       console.log("Page#", index, "created");
-    }));
+    })
     // fs.rm(qrCodeImagePath).then(() => {
     //   console.log("QR code removed");
     // });
