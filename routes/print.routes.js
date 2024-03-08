@@ -48,7 +48,7 @@ const printPlants = async (plants) => {
                   plant.actions.length > 0
                     ? plant.actions[0].date.toDateString()
                     : "none",
-                qr: "qr/" + plant._id + ".png",
+                qr: "./qr/" + plant._id + ".png",
               };
             })
             .catch((err) => {
