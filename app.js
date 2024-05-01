@@ -5,7 +5,7 @@ const bodyParser = require('body-parser');
 const cors=require("cors")
 const path=require('path')
 const cups = require("node-cups");
-const PORT=config.get("port")||5000
+const PORT=config.get("port")||4000
 
 const app=express()
 
