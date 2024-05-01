@@ -13,7 +13,7 @@ const app=express()
 app.use(cors())
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.json({extended:true}))
-app.use('/api/print',require('./routes/print.routes.js'))
+app.use('/',require('./routes/print.routes.js'))
 
 async function start(){
   try {
