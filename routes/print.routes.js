@@ -133,6 +133,17 @@ const printPlants = async (plants) => {
     return error;
   }
 };
+router.get("/printers", async (req, res) => {
+  try {
+    const printerNames = await cups.getPrinterNames();
+    res.json(printerNames);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+}
+);
+
+
 
 router.post("/print_tray", async (req, res) => {
   try {
