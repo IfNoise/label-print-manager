@@ -53,7 +53,7 @@ const drawPlantLabels = (plants, ctx) => {
   });
 };
 
-const printPlants = async (plants) => {
+const printPlants = async (plants,printer) => {
   console.log("printPlants: plants", plants);
 
   try {
@@ -103,11 +103,8 @@ const printPlants = async (plants) => {
     //   console.log("QR code removed");
     // });
     drawPlantLabels(tray, ctx);
-
-    const printerNames = await cups.getPrinterNames();
-    console.log(printerNames);
     const options = {
-      destination: printerNames[0],
+      destination: printer,
       jobTitle: "Label Printing",
       copies: 1,
     };
@@ -146,10 +143,11 @@ router.get("/printers", async (req, res) => {
 
 
 router.post("/print_tray", async (req, res) => {
+  const printer=req.body.printer
   try {
     const data = await TrayItem.find({}, "plantId").exec();
     const plants = data.map((plant) => plant.plantId);
-    const result = await printPlants(plants);
+    const result = await printPlants(plants,printer);
 
     res.json({ result });
   } catch (error) {
@@ -158,11 +156,12 @@ router.post("/print_tray", async (req, res) => {
 });
 router.post("/print_plants", async (req, res) => {
   const plants = req.body;
+  const printer=req.body.printer
   if (plants?.length < 1) {
     return res.status(500).json({ message: "Nothing for printing" });
   }
   try {
-    const result = await printPlants(plants);
+    const result = await printPlants(plants,printer);
 
     res.json(result);
   } catch (error) {
