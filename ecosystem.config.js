@@ -1,6 +1,6 @@
 module.exports = {
   apps : [{
-    name   : "Plants",
+    name   : "label_printer_manager",
     script : "./app.js",
      env_production: {
        NODE_ENV: "production"
