@@ -115,14 +115,14 @@ const printPlants = async (plants,printer) => {
     cups.printBuffer(buff, options, (err, jobID) => {
       if (err) {
         console.error(err);
-        res.status(500).send("Ошибка при печати этикетки");
+        console.log("Ошибка при печати этикетки");
       } else {
         console.log(`Этикетка успешно отправлена на печать. Job ID: ${jobID}`);
-        res.send("Этикетка успешно отправлена на печать.");
+        fs.writeFile("label.pdf", buff, function (err) {
+          if (err) throw err;});
       }
     });
-    fs.writeFile("label.pdf", buff, function (err) {
-      if (err) throw err;});
+    
     return tray;
   } catch (error) {
     return error;
