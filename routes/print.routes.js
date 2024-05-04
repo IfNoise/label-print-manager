@@ -114,7 +114,7 @@ const printPlants = async (plants,printer) => {
       if (err) throw err;
 
       console.log("created label.pdf");
-    });
+    
     cups.printFile("label.pdf", options, (err, jobID) => {
       if (err) {
         console.error(err);
@@ -124,7 +124,7 @@ const printPlants = async (plants,printer) => {
         res.send("Этикетка успешно отправлена на печать.");
       }
     });
-
+  });
     return tray;
   } catch (error) {
     return error;

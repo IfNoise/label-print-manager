@@ -2,5 +2,5 @@
   "port":4000,
   "jwtSecret":"surinagro ddweed chueaploeng",
   "mongodbUri":"mongodb://192.168.31.250:27017/SurinAgro",
-  "baseUrl":"http://localhost"
+  "baseUrl":"http://127.0.0.1"
 }
