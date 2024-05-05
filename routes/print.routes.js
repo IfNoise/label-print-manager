@@ -123,7 +123,7 @@ const printPlants = async (plants,printer) => {
     console.log(buff.length)
     
     
-    cups.printBuffer(buff, options, (err, jobID) => {
+    await cups.printBuffer(buff, options, (err, jobID) => {
       if (err) {
         console.error(err);
         console.log("Ошибка при печати этикетки");
@@ -134,9 +134,7 @@ const printPlants = async (plants,printer) => {
           console.log("Saved!");
         });
       }
-    }).then((res) => {
-      console.log("res", res);
-    });
+    })
     
     return tray;
   } catch (error) {
