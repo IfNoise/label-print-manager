@@ -4,7 +4,6 @@ const mongoose = require('mongoose')
 const bodyParser = require('body-parser');
 const cors=require("cors")
 const path=require('path')
-const cups = require("node-cups");
 const PORT=config.get("port")||4000
 
 const app=express()
@@ -17,7 +16,6 @@ app.use('/api/printer',require('./routes/print.routes.js'))
 
 async function start(){
   try {
-    const printerNames = await cups.getPrinterNames();
     console.log(printerNames);
     await mongoose.connect(config.get('mongodbUri'),{
       useNewUrlParser: true,
