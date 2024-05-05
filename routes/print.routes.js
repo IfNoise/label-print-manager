@@ -32,7 +32,7 @@ const createQr = (path, id) => {
 
 const drawPlantLabels = (plants, ctx) => {
  Promise.all(plants.map(async (plant, index) => {
-  return Promise((resolve,reject)=>{
+  return new Promise((resolve,reject)=>{
     loadImage(plant.qr).then((img) => {
       
       if (index !== 0) {
