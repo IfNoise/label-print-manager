@@ -31,8 +31,10 @@ const createQr = (path, id) => {
 };
 
 const drawPlantLabels = (plants, ctx) => {
- Promise.all( plants.forEach(async (plant, index) => {
-    const img=await loadImage(plant.qr)
+ Promise.all(plants.map(async (plant, index) => {
+  return Promise((resolve,reject)=>{
+    loadImage(plant.qr).then((img) => {
+      
       if (index !== 0) {
         ctx.addPage(142, 85);
       }
@@ -49,8 +51,13 @@ const drawPlantLabels = (plants, ctx) => {
       ctx.fillText(plant.code, 13, 70, 62);
 
       console.log("Page#", index, "created");
-    }))
-  
+      resolve("ok")
+    }).catch((err) => {
+      console.log("Error loading image: ", err);
+      reject(err); 
+    }
+    )})}));
+
 };
 
 const printPlants = async (plants,printer) => {
