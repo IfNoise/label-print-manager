@@ -103,14 +103,18 @@ const printPlants = async (plants,printer) => {
     //   console.log("QR code removed");
     // });
     drawPlantLabels(tray, ctx);
+
+
     const options = {
       destination: printer,
       jobTitle: "Label Printing",
       copies: 1,
+
     };
 
     const buff = myPDFcanvas.toBuffer("application/pdf");
-
+    console.log(buff.length)
+    
     
     cups.printBuffer(buff, options, (err, jobID) => {
       if (err) {
