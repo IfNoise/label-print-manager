@@ -31,7 +31,7 @@ const createQr = (path, id) => {
 };
 
 const drawPlantLabels = (plants, ctx) => {
- plants.map((plant, index) => {
+Promise.all( plants.map((plant, index) => {
   return new Promise((resolve,reject)=>{
     loadImage(plant.qr).then((img) => {
       
@@ -56,7 +56,7 @@ const drawPlantLabels = (plants, ctx) => {
       console.log("Error loading image: ", err);
       reject(err); 
     }
-    )})});
+    )})}));
 
 };
 
@@ -109,7 +109,7 @@ const printPlants = async (plants,printer) => {
     // fs.rm(qrCodeImagePath).then(() => {
     //   console.log("QR code removed");
     // });
-    Promise.all(drawPlantLabels(tray, ctx));
+    console.log(drawPlantLabels(tray, ctx));
 
 
     const options = {
