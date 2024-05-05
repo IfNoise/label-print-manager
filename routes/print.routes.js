@@ -126,7 +126,7 @@ const printPlants = async (plants,printer) => {
       console.log("Saved!");
     });
     
-    await cups.printFile("label.pdf", options, (err, jobID) => {
+    const printResult=await cups.printFile("label.pdf", options, (err, jobID) => {
       if (err) {
         console.error(err);
         console.log("Ошибка при печати этикетки");
@@ -135,6 +135,7 @@ const printPlants = async (plants,printer) => {
         
       }
     })
+    console.log('printResult',printResult)
     
     return tray;
   } catch (error) {
