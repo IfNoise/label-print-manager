@@ -123,7 +123,9 @@ const printPlants = async (plants,printer) => {
       } else {
         console.log(`Этикетка успешно отправлена на печать. Job ID: ${jobID}`);
         fs.writeFile("label.pdf", buff, function (err) {
-          if (err) throw err;});
+          if (err) throw err;
+          console.log("Saved!");
+        });
       }
     });
     
