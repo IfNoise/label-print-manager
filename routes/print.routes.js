@@ -31,7 +31,7 @@ const createQr = (path, id) => {
 };
 
 const drawPlantLabels = (plants, ctx) => {
-Promise.all( plants.map((plant, index) => {
+return Promise.all( plants.map((plant, index) => {
   return new Promise((resolve,reject)=>{
     loadImage(plant.qr).then((img) => {
       
@@ -109,7 +109,7 @@ const printPlants = async (plants,printer) => {
     // fs.rm(qrCodeImagePath).then(() => {
     //   console.log("QR code removed");
     // });
-    console.log(drawPlantLabels(tray, ctx));
+    await drawPlantLabels(tray, ctx) ;
 
 
     const options = {
