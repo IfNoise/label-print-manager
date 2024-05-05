@@ -16,7 +16,6 @@ app.use('/api/printer',require('./routes/print.routes.js'))
 
 async function start(){
   try {
-    console.log(printerNames);
     await mongoose.connect(config.get('mongodbUri'),{
       useNewUrlParser: true,
       useUnifiedTopology: true
