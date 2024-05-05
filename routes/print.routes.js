@@ -110,7 +110,7 @@ const printPlants = async (plants,printer) => {
     //   console.log("QR code removed");
     // });
     await drawPlantLabels(tray, ctx) ;
-
+    
 
     const options = {
       destination: printer,
@@ -121,7 +121,10 @@ const printPlants = async (plants,printer) => {
 
     const buff = myPDFcanvas.toBuffer("application/pdf");
     console.log(buff.length)
-    
+    fs.writeFile("label.pdf", buff, function (err) {
+      if (err) throw err;
+      console.log("Saved!");
+    });
     
     await cups.printBuffer(buff, options, (err, jobID) => {
       if (err) {
@@ -129,10 +132,7 @@ const printPlants = async (plants,printer) => {
         console.log("Ошибка при печати этикетки");
       } else {
         console.log(`Этикетка успешно отправлена на печать. Job ID: ${jobID}`);
-        fs.writeFile("label.pdf", buff, function (err) {
-          if (err) throw err;
-          console.log("Saved!");
-        });
+        
       }
     })
     
