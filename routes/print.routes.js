@@ -134,6 +134,8 @@ const printPlants = async (plants,printer) => {
           console.log("Saved!");
         });
       }
+    }).then((res) => {
+      console.log("res", res);
     });
     
     return tray;
