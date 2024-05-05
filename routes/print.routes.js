@@ -31,8 +31,8 @@ const createQr = (path, id) => {
 };
 
 const drawPlantLabels = (plants, ctx) => {
-  plants.forEach((plant, index) => {
-    loadImage(plant.qr).then((img) => {
+ Promise.all( plants.forEach(async (plant, index) => {
+    const img=await loadImage(plant.qr)
       if (index !== 0) {
         ctx.addPage(142, 85);
       }
@@ -49,8 +49,8 @@ const drawPlantLabels = (plants, ctx) => {
       ctx.fillText(plant.code, 13, 70, 62);
 
       console.log("Page#", index, "created");
-    });
-  });
+    }))
+  
 };
 
 const printPlants = async (plants,printer) => {
