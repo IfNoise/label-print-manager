@@ -121,12 +121,12 @@ const printPlants = async (plants,printer) => {
 
     const buff = myPDFcanvas.toBuffer("application/pdf");
     console.log(buff.length)
-    fs.writeFile("label.pdf", buff, function (err) {
+    await fs.writeFile("label.pdf", buff, function (err) {
       if (err) throw err;
       console.log("Saved!");
     });
     
-    await cups.printBuffer(buff, options, (err, jobID) => {
+    await cups.printFile("label.pdf", options, (err, jobID) => {
       if (err) {
         console.error(err);
         console.log("Ошибка при печати этикетки");
