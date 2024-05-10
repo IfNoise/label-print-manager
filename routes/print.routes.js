@@ -31,38 +31,36 @@ const createQr = (path, id) => {
 };
 
 const drawPlantLabels = (plants, ctx) => {
-return Promise.all( plants.map((plant, index) => {
-  return new Promise((resolve,reject)=>{
-    loadImage(plant.qr).then((img) => {
-      
-      if (index !== 0) {
-        ctx.addPage(142, 85);
-      }
-      ctx.drawImage(img, 66, 2, 75, 75);
-      ctx.font = "bold 22px Arial ";
-      ctx.fillText(plant.pheno, 3, 20, 64);
-      ctx.font = " 12px Arial ";
-      ctx.fillText(plant.strain, 3, 30, 52);
-      ctx.font = "8px Arial ";
-      ctx.fillText(plant.type, 3, 40, 52);
-      ctx.font = "10px Arial ";
-      ctx.fillText("start:" + plant.start, 3, 55, 62);
-      ctx.font = "bold 16px Arial";
-      ctx.fillText(plant.code, 13, 70, 62);
-
-      console.log("Page#", index, "created");
-      resolve("ok")
-    }).catch((err) => {
-      console.log("Error loading image: ", err);
-      reject(err); 
-    }
-    )})}));
-
+  return Promise.all(
+    plants.map((plant, index) => {
+      return new Promise((resolve, reject) => {
+        loadImage(plant.qr)
+          .then((img) => {
+            if (index !== 0) {
+              ctx.addPage(142, 85);
+            }
+            ctx.drawImage(img, 66, 2, 75, 75);
+            ctx.font = "bold 22px Arial ";
+            ctx.fillText(plant.pheno, 3, 20, 64);
+            ctx.font = " 12px Arial ";
+            ctx.fillText(plant.strain, 3, 30, 52);
+            ctx.font = "8px Arial ";
+            ctx.fillText(plant.type, 3, 40, 52);
+            ctx.font = "10px Arial ";
+            ctx.fillText("start:" + plant.start, 3, 55, 62);
+            ctx.font = "bold 16px Arial";
+            ctx.fillText(plant.code, 13, 70, 62);
+            resolve("ok");
+          })
+          .catch((err) => {
+            reject(err);
+          });
+      });
+    })
+  );
 };
 
-const printPlants = async (plants,printer) => {
-  console.log("printPlants: plants", plants);
-
+const printPlants = async (plants, printer) => {
   try {
     const tray = await Promise.all(
       plants.map(
@@ -90,46 +88,33 @@ const printPlants = async (plants,printer) => {
             })
       )
     );
-    console.log("tray: ", tray);
-
-    const qrs = await Promise.all(
+await Promise.all(
       tray.map(async (plant) => {
         return await createQr(plant.qr, plant.id);
       })
     );
-    console.log("Qrs", qrs);
-
-    if (qrs.length === tray.length) console.log("QR codes created");
-
     const myPDFcanvas = createCanvas(142, 85, "pdf");
-    console.log("Canvas created");
-
     const ctx = myPDFcanvas.getContext("2d");
 
     // fs.rm(qrCodeImagePath).then(() => {
     //   console.log("QR code removed");
     // });
-    await drawPlantLabels(tray, ctx) ;
-    
+    await drawPlantLabels(tray, ctx);
 
     const options = {
       destination: printer,
       jobTitle: "Label Printing",
       copies: 1,
-
     };
 
     const buff = myPDFcanvas.toBuffer("application/pdf");
-    console.log(buff.length)
     await fs.writeFile("label.pdf", buff, function (err) {
       if (err) throw err;
       console.log("Saved!");
     });
-    
-    const printResult=await cups.printFile("label.pdf", options)
-    console.log('printResult',printResult)
-    
-    return tray;
+
+    const result= await cups.printFile("label.pdf", options);
+    return result;
   } catch (error) {
     return error;
   }
@@ -141,17 +126,14 @@ router.get("/printers", async (req, res) => {
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
-}
-);
-
-
+});
 
 router.post("/print_tray", async (req, res) => {
-  const printer=req.body.printer
+  const printer = req.body.printer;
   try {
     const data = await TrayItem.find({}, "plantId").exec();
     const plants = data.map((plant) => plant.plantId);
-    const result = await printPlants(plants,printer);
+    const result = await printPlants(plants, printer);
 
     res.json({ result });
   } catch (error) {
@@ -160,12 +142,12 @@ router.post("/print_tray", async (req, res) => {
 });
 router.post("/print_plants", async (req, res) => {
   const plants = req.body.id;
-  const printer=req.body.printer
+  const printer = req.body.printer;
   if (plants?.length < 1) {
     return res.status(500).json({ message: "Nothing for printing" });
   }
   try {
-    const result = await printPlants(plants,printer);
+    const result = await printPlants(plants, printer);
 
     res.json(result);
   } catch (error) {
