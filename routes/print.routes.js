@@ -102,7 +102,7 @@ await Promise.all(
     await drawPlantLabels(tray, ctx);
 
     const options = {
-      destination: printer,
+      printer,
       jobTitle: "Label Printing",
       copies: 1,
     };
